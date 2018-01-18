@@ -436,7 +436,7 @@ class LdapBackend(object):
       self.add_ldap_config(desktop.conf.LDAP)
 
   @metrics.ldap_authentication_time
-  def authenticate(self, username=None, password=None, server=None):
+  def authenticate(self, request=None, username=None, password=None, server=None):
     self.add_ldap_config_for_server(server)
 
     username_filter_kwargs = ldap_access.get_ldap_user_kwargs(username)
