@@ -264,6 +264,7 @@ class WorkflowManager(models.Manager):
 
   def new_workflow(self, owner):
     workflow = Workflow(owner=owner, schema_version=WorkflowManager.SCHEMA_VERSION['0.4'])
+    workflow.save()
 
     kill = Kill(name='kill', workflow=workflow, node_type=Kill.node_type)
     end = End(name='end', workflow=workflow, node_type=End.node_type)
@@ -273,7 +274,9 @@ class WorkflowManager(models.Manager):
     related = Link(parent=start, child=end, name='related')
 
     workflow.start = start
+    workflow.start.save()
     workflow.end = end
+    workflow.end.save()
 
     return workflow
 
@@ -451,7 +454,6 @@ class Workflow(Job):
 
     return dict([(param, '') for param in list(params)])
 
-  @property
   def actions(self):
     return Action.objects.filter(workflow=self, node_type__in=Action.types)
 
