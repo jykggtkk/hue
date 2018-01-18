@@ -99,17 +99,17 @@ def test_home():
   user = User.objects.get(username="test_home")
 
   response = c.get(reverse(home))
-  assert_equal(["notmine", "trash", "mine", "history"], json.loads(response.context['json_tags']).keys())
+  assert_equal(["notmine", "trash", "mine", "history"], json.loads(response.context[0]['json_tags']).keys())
   assert_equal(200, response.status_code)
 
   script, created = PigScript.objects.get_or_create(owner=user)
   doc = Document.objects.link(script, owner=script.owner, name='test_home')
 
   response = c.get(reverse(home))
-  assert_true(str(doc.id) in json.loads(response.context['json_documents']))
+  assert_true(str(doc.id) in json.loads(response.context[0]['json_documents']))
 
   response = c.get(reverse(home))
-  tags = json.loads(response.context['json_tags'])
+  tags = json.loads(response.context[0]['json_tags'])
   assert_equal([doc.id], tags['mine'][0]['docs'], tags)
   assert_equal([], tags['trash']['docs'], tags)
   assert_equal([], tags['history']['docs'], tags)
@@ -117,7 +117,7 @@ def test_home():
   doc.send_to_trash()
 
   response = c.get(reverse(home))
-  tags = json.loads(response.context['json_tags'])
+  tags = json.loads(response.context[0]['json_tags'])
   assert_equal([], tags['mine'][0]['docs'], tags)
   assert_equal([doc.id], tags['trash']['docs'], tags)
   assert_equal([], tags['history']['docs'], tags)
@@ -125,7 +125,7 @@ def test_home():
   doc.restore_from_trash()
 
   response = c.get(reverse(home))
-  tags = json.loads(response.context['json_tags'])
+  tags = json.loads(response.context[0]['json_tags'])
   assert_equal([doc.id], tags['mine'][0]['docs'], tags)
   assert_equal([], tags['trash']['docs'], tags)
   assert_equal([], tags['history']['docs'], tags)
@@ -133,7 +133,7 @@ def test_home():
   doc.add_to_history()
 
   response = c.get(reverse(home))
-  tags = json.loads(response.context['json_tags'])
+  tags = json.loads(response.context[0]['json_tags'])
   assert_equal([], tags['mine'][0]['docs'], tags)
   assert_equal([], tags['trash']['docs'], tags)
   assert_equal([], tags['history']['docs'], tags) # We currently don't fetch [doc.id]
@@ -804,7 +804,7 @@ def test_last_access_time():
   after_access_time = time.time()
   access = desktop.auth.views.get_current_users()
 
-  user = response.context['user']
+  user = response.context[0]['user']
   login_time = login[user]['time']
   access_time = access[user]['time']
 

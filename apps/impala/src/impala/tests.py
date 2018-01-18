@@ -81,16 +81,16 @@ class TestMockedImpala:
     user = User.objects.get(username='test')
 
     response = self.client.get("/impala/list_designs")
-    assert_equal(len(response.context['page'].object_list), 0)
+    assert_equal(len(response.context[0]['page'].object_list), 0)
 
     try:
       beewax_query = create_saved_query('beeswax', user)
       response = self.client.get("/impala/list_designs")
-      assert_equal(len(response.context['page'].object_list), 0)
+      assert_equal(len(response.context[0]['page'].object_list), 0)
 
       impala_query = create_saved_query('impala', user)
       response = self.client.get("/impala/list_designs")
-      assert_equal(len(response.context['page'].object_list), 1)
+      assert_equal(len(response.context[0]['page'].object_list), 1)
 
       # Test my query page
       QueryHistory.objects.create(owner=user, design=impala_query, query='', last_state=QueryHistory.STATE.available.index)

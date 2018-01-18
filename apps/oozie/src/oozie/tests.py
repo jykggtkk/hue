@@ -1952,7 +1952,7 @@ class TestEditor(OozieMockBase):
                   {'name': u'SLEEP', 'value': ''},
                   {'name': u'market', 'value': u'US'}
                   ],
-                  response.context['params_form'].initial)
+                  response.context[0]['params_form'].initial)
 
   def test_submit_coordinator(self):
     coord = create_coordinator(self.wf, self.c, self.user)
@@ -1962,7 +1962,7 @@ class TestEditor(OozieMockBase):
     assert_equal([{'name': u'output', 'value': ''},
                   {'name': u'market', 'value': u'US'}
                   ],
-                  response.context['params_form'].initial)
+                  response.context[0]['params_form'].initial)
 
   def test_trash_workflow(self):
     previous_trashed = Document.objects.trashed_docs(Workflow, self.user).count()
@@ -3158,7 +3158,7 @@ class TestOozieSubmissions(OozieBase):
                                u'form-0-value': [u'True']
                            },
                            follow=True)
-    job = OozieServerProvider.wait_until_completion(response.context['oozie_workflow'].id)
+    job = OozieServerProvider.wait_until_completion(response.context[0]['oozie_workflow'].id)
 
     assert_true(job.status in ('SUCCEEDED', 'KILLED'), job.status) # Dies for some cluster setup reason
 
@@ -3184,7 +3184,7 @@ class TestOozieSubmissions(OozieBase):
                                u'form-0-value': [u'True']
                            },
                            follow=True)
-    job = OozieServerProvider.wait_until_completion(response.context['oozie_workflow'].id)
+    job = OozieServerProvider.wait_until_completion(response.context[0]['oozie_workflow'].id)
 
     assert_true(job.status in ('SUCCEEDED', 'KILLED'), job.status) # Dies for some cluster setup reason
 
@@ -3224,7 +3224,7 @@ class TestOozieSubmissions(OozieBase):
                                u'form-0-value': [u'True']
                            },
                            follow=True)
-    job = OozieServerProvider.wait_until_completion(response.context['oozie_workflow'].id)
+    job = OozieServerProvider.wait_until_completion(response.context[0]['oozie_workflow'].id)
 
     assert_true(job.status in ('SUCCEEDED', 'KILLED'), job.status)
 
@@ -3254,7 +3254,7 @@ class TestDashboardWithOozie(OozieBase):
 
     response = self.c.get(reverse('oozie:submit_external_job', kwargs={'application_path': application_path}))
     assert_equal([{'name': 'SLEEP', 'value': ''}, {'name': 'output', 'value': ''}],
-                  response.context['params_form'].initial)
+                  response.context[0]['params_form'].initial)
 
     oozie_properties = """
 #
@@ -3268,7 +3268,7 @@ my_prop_not_filtered=10
 
     response = self.c.get(reverse('oozie:submit_external_job', kwargs={'application_path': application_path}))
     assert_equal([{'name': 'SLEEP', 'value': ''}, {'name': 'my_prop_not_filtered', 'value': '10'}, {'name': 'output', 'value': ''}],
-                  response.context['params_form'].initial)
+                  response.context[0]['params_form'].initial)
 
     # Submit, just check if submittion worked
     response = self.c.post(reverse('oozie:submit_external_job', kwargs={'application_path': application_path}), {
@@ -3282,11 +3282,11 @@ my_prop_not_filtered=10
         u'form-2-name': [u'output'],
         u'form-2-value': [u'/path/output'],
     }, follow=True)
-    assert_true(response.context['oozie_workflow'], response.content)
-    wf_id = response.context['oozie_workflow'].id
+    assert_true(response.context[0]['oozie_workflow'], response.content)
+    wf_id = response.context[0]['oozie_workflow'].id
 
     # Check if response contains log data
-    response = self.c.get(reverse('oozie:get_oozie_job_log', args=[response.context['oozie_workflow'].id]) + "?format=json&limit=100&loglevel=INFO&recent=2h:30m")
+    response = self.c.get(reverse('oozie:get_oozie_job_log', args=[response.context[0]['oozie_workflow'].id]) + "?format=json&limit=100&loglevel=INFO&recent=2h:30m")
     data = json.loads(response.content)
     assert_true(len(data['log'].split('\n')) <= 100)
     assert_equal('RUNNING', data['status'])
@@ -3376,7 +3376,7 @@ class TestDashboard(OozieMockBase):
     reset = ENABLE_V2.set_for_testing(True)
     try:
       response = self.c.get(reverse('oozie:sync_coord_workflow', args=[MockOozieApi.WORKFLOW_IDS[5]]))
-      assert_equal([{'name':'Dryrun', 'value': False}, {'name':'ls_arg', 'value': '-l'}], response.context['params_form'].initial)
+      assert_equal([{'name':'Dryrun', 'value': False}, {'name':'ls_arg', 'value': '-l'}], response.context[0]['params_form'].initial)
     finally:
       wf_doc.delete()
       reset()
@@ -3715,7 +3715,7 @@ class TestDashboard(OozieMockBase):
 
       response = self.c.get(reverse('oozie:list_oozie_workflow', args=[MockOozieApi.WORKFLOW_IDS[0]]), {})
 
-      assert_true(response.context['workflow_graph'])
+      assert_true(response.context[0]['workflow_graph'])
       assert_equal(Document.objects.available_docs(Workflow, self.user).count(), workflow_count)
     finally:
       finish()
@@ -3727,7 +3727,7 @@ class TestDashboard(OozieMockBase):
 
       response = self.c.get(reverse('oozie:list_oozie_workflow', args=[MockOozieApi.WORKFLOW_IDS[1]]), {})
 
-      assert_true(response.context['workflow_graph'] is None)
+      assert_true(response.context[0]['workflow_graph'] is None)
       assert_equal(Document.objects.available_docs(Workflow, self.user).count(), workflow_count)
     except:
       LOG.exception('failed to test workflow status graph')

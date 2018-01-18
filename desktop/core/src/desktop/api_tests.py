@@ -228,18 +228,18 @@ class TestDocModelPermissions():
   def test_share_document_permissions(self):
     # No doc
     response = self.client.get(self.old_home_path)
-    assert_equal({}, json.loads(response.context['json_documents']))
+    assert_equal({}, json.loads(response.context[0]['json_documents']))
     response = self.client_not_me.get(self.old_home_path)
-    assert_equal({}, json.loads(response.context['json_documents']))
+    assert_equal({}, json.loads(response.context[0]['json_documents']))
 
     # Add doc
     script, doc = self._add_doc('test_update_permissions')
     doc_id = '%s' % doc.id
 
     response = self.client.get(self.old_home_path)
-    assert_true(doc_id in json.loads(response.context['json_documents']))
+    assert_true(doc_id in json.loads(response.context[0]['json_documents']))
     response = self.client_not_me.get(self.old_home_path)
-    assert_false(doc_id in json.loads(response.context['json_documents']))
+    assert_false(doc_id in json.loads(response.context[0]['json_documents']))
 
     assert_true(doc.can_read(self.user))
     assert_true(doc.can_write(self.user))
@@ -272,9 +272,9 @@ class TestDocModelPermissions():
     assert_false(doc.can_write(self.user_not_me))
 
     response = self.client.get(self.old_home_path)
-    assert_true(doc_id in json.loads(response.context['json_documents']))
+    assert_true(doc_id in json.loads(response.context[0]['json_documents']))
     response = self.client_not_me.get(self.old_home_path)
-    assert_true(doc_id in json.loads(response.context['json_documents']))
+    assert_true(doc_id in json.loads(response.context[0]['json_documents']))
 
     # Un-share
     response = self.client.post("/desktop/api/doc/update_permissions", {
@@ -301,9 +301,9 @@ class TestDocModelPermissions():
     assert_false(doc.can_write(self.user_not_me))
 
     response = self.client.get(self.old_home_path)
-    assert_true(doc_id in json.loads(response.context['json_documents']))
+    assert_true(doc_id in json.loads(response.context[0]['json_documents']))
     response = self.client_not_me.get(self.old_home_path)
-    assert_false(doc_id in json.loads(response.context['json_documents']))
+    assert_false(doc_id in json.loads(response.context[0]['json_documents']))
 
     # Share by group
     default_group = get_default_user_group()
@@ -334,9 +334,9 @@ class TestDocModelPermissions():
     assert_false(doc.can_write(self.user_not_me))
 
     response = self.client.get(self.old_home_path)
-    assert_true(doc_id in json.loads(response.context['json_documents']))
+    assert_true(doc_id in json.loads(response.context[0]['json_documents']))
     response = self.client_not_me.get(self.old_home_path)
-    assert_true(doc_id in json.loads(response.context['json_documents']))
+    assert_true(doc_id in json.loads(response.context[0]['json_documents']))
 
     # Un-share
     response = self.client.post("/desktop/api/doc/update_permissions", {
@@ -363,9 +363,9 @@ class TestDocModelPermissions():
     assert_false(doc.can_write(self.user_not_me))
 
     response = self.client.get(self.old_home_path)
-    assert_true(doc_id in json.loads(response.context['json_documents']))
+    assert_true(doc_id in json.loads(response.context[0]['json_documents']))
     response = self.client_not_me.get(self.old_home_path)
-    assert_false(doc_id in json.loads(response.context['json_documents']))
+    assert_false(doc_id in json.loads(response.context[0]['json_documents']))
 
     # Modify by user
     response = self.client.post("/desktop/api/doc/update_permissions", {
@@ -394,9 +394,9 @@ class TestDocModelPermissions():
     assert_true(doc.can_write(self.user_not_me))
 
     response = self.client.get(self.old_home_path)
-    assert_true(doc_id in json.loads(response.context['json_documents']))
+    assert_true(doc_id in json.loads(response.context[0]['json_documents']))
     response = self.client_not_me.get(self.old_home_path)
-    assert_true(doc_id in json.loads(response.context['json_documents']))
+    assert_true(doc_id in json.loads(response.context[0]['json_documents']))
 
     # Un-share
     response = self.client.post("/desktop/api/doc/update_permissions", {
@@ -423,9 +423,9 @@ class TestDocModelPermissions():
     assert_false(doc.can_write(self.user_not_me))
 
     response = self.client.get(self.old_home_path)
-    assert_true(doc_id in json.loads(response.context['json_documents']))
+    assert_true(doc_id in json.loads(response.context[0]['json_documents']))
     response = self.client_not_me.get(self.old_home_path)
-    assert_false(doc_id in json.loads(response.context['json_documents']))
+    assert_false(doc_id in json.loads(response.context[0]['json_documents']))
 
     # Modify by group
     response = self.client.post("/desktop/api/doc/update_permissions", {
@@ -454,9 +454,9 @@ class TestDocModelPermissions():
     assert_true(doc.can_write(self.user_not_me))
 
     response = self.client.get(self.old_home_path)
-    assert_true(doc_id in json.loads(response.context['json_documents']))
+    assert_true(doc_id in json.loads(response.context[0]['json_documents']))
     response = self.client_not_me.get(self.old_home_path)
-    assert_true(doc_id in json.loads(response.context['json_documents']))
+    assert_true(doc_id in json.loads(response.context[0]['json_documents']))
 
     # Un-share
     response = self.client.post("/desktop/api/doc/update_permissions", {
@@ -483,9 +483,9 @@ class TestDocModelPermissions():
     assert_false(doc.can_write(self.user_not_me))
 
     response = self.client.get(self.old_home_path)
-    assert_true(doc_id in json.loads(response.context['json_documents']))
+    assert_true(doc_id in json.loads(response.context[0]['json_documents']))
     response = self.client_not_me.get(self.old_home_path)
-    assert_false(doc_id in json.loads(response.context['json_documents']))
+    assert_false(doc_id in json.loads(response.context[0]['json_documents']))
 
   def test_update_permissions_cannot_escalate_privileges(self):
     script, doc = self._add_doc('test_update_permissions_cannot_escape_privileges')

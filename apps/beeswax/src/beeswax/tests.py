@@ -404,7 +404,7 @@ for x in sys.stdin:
       udfs=[('cube', 'com.cloudera.beeswax.CubeSampleUDF')],
       resources=[('JAR', udf)], local=False, database=self.db_name)
     response = wait_for_query_to_finish(self.client, response, max=60.0)
-    assert_equal(["64"], response.context["results"][0])
+    assert_equal(["64"], response.context[0]["results"][0])
 
 
   def test_query_with_simple_errors(self):
@@ -569,7 +569,7 @@ for x in sys.stdin:
     # Selecting from utf-8 table should get correct result
     query = u"SELECT * FROM `%(db)s`.`test_utf8` WHERE bar='%(val)s'" % {'val': unichr(200), 'db': self.db_name}
     response = _make_query(self.client, query, wait=True, database=self.db_name)
-    assert_equal(["200", unichr(200)], response.context["results"][0], "selecting from utf-8 table should get correct result")
+    assert_equal(["200", unichr(200)], response.context[0]["results"][0], "selecting from utf-8 table should get correct result")
 
     csv = get_csv(self.client, response)
     assert_equal('"200","%s"' % (unichr(200).encode('utf-8'),), csv.split()[1])
@@ -581,7 +581,7 @@ for x in sys.stdin:
 
     # Describe table should be fine with non-ascii comment
     response = self.client.get('/beeswax/table/%(db)s/test_utf8' % {'db': self.db_name})
-    assert_equal(response.context['table'].parameters['comment'], self.get_i18n_table_comment())
+    assert_equal(response.context[0]['table'].parameters['comment'], self.get_i18n_table_comment())
 
 
   def _parallel_query_helper(self, i, result_holder, lock, num_tasks):
@@ -2147,11 +2147,11 @@ def test_history_page():
 
   # Only show Beeswax queries
   response = do_view('')
-  assert_equal({u'q-type': [u'beeswax']}, response.context['filter_params'])
+  assert_equal({u'q-type': [u'beeswax']}, response.context[0]['filter_params'])
 
   # Test pagination
   response = do_view('q-page=100', 0)
-  assert_equal(0, len(response.context['page'].object_list))
+  assert_equal(0, len(response.context[0]['page'].object_list))
 
   client = make_logged_in_client(username='test_who')
   grant_access('test_who', 'test_who', 'test_who')

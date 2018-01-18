@@ -351,7 +351,7 @@ LIMIT $limit"""))
     reset = ENABLE_V2.set_for_testing(True)
     try:
       response = self.c.get(reverse('oozie:submit_single_action', args=[wf_doc.id, '3f107997-04cc-8733-60a9-a4bb62cebabc']))
-      assert_equal([{'name':'Dryrun', 'value': False}, {'name':'ls_arg', 'value': '-l'}], response.context['params_form'].initial)
+      assert_equal([{'name':'Dryrun', 'value': False}, {'name':'ls_arg', 'value': '-l'}], response.context[0]['params_form'].initial)
     except Exception, ex:
       logging.exception(ex)
     finally:
@@ -494,7 +494,7 @@ LIMIT $limit"""))
     try:
       response = self.c.get(reverse('oozie:list_editor_workflows'))
       assert_equal(response.status_code, 200)
-      data = json.loads(response.context['workflows_json'])
+      data = json.loads(response.context[0]['workflows_json'])
       uuids = [doc['uuid'] for doc in data]
       assert_true(wf_doc.uuid in uuids, data)
 
@@ -502,7 +502,7 @@ LIMIT $limit"""))
       response = self.c.post('/desktop/api2/doc/delete', {'uuid': json.dumps(wf_doc.uuid)})
       response = self.c.get(reverse('oozie:list_editor_workflows'))
       assert_equal(response.status_code, 200)
-      data = json.loads(response.context['workflows_json'])
+      data = json.loads(response.context[0]['workflows_json'])
       uuids = [doc['uuid'] for doc in data]
       assert_false(wf_doc.uuid in uuids, data)
     finally:
