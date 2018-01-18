@@ -34,7 +34,7 @@ urlpatterns = [
   url(r'^users/add_ldap_groups$', useradmin_views.add_ldap_groups, name="useradmin.views.add_ldap_groups"),
   url(r'^users/sync_ldap_users_groups$', useradmin_views.sync_ldap_users_groups),
   url(r'^groups/edit/(?P<name>%s)$' % (groupname_re,), useradmin_views.edit_group, name="useradmin.views.edit_group"),
-  url(r'^permissions/edit/(?P<app>.+?)/(?P<priv>.+?)/?$', useradmin_views.edit_permission),
+  url(r'^permissions/edit/(?P<app>.+?)/(?P<priv>.+?)/?$', useradmin_views.edit_permission, name="useradmin.views.edit_permission"),
   url(r'^users/new$', useradmin_views.edit_user, name="useradmin.views.edit_user"),
   url(r'^groups/new$', useradmin_views.edit_group, name="useradmin.views.edit_group"),
   url(r'^users/delete', useradmin_views.delete_user, name="useradmin.views.delete_user"),
