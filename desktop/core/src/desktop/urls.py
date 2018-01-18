@@ -95,7 +95,7 @@ dynamic_patterns += [
   url(r'^desktop/status_bar/?$', desktop_views.status_bar),
   url(r'^desktop/debug/is_alive$', desktop_views.is_alive),
   url(r'^desktop/debug/is_idle$', desktop_views.is_idle),
-  url(r'^desktop/debug/threads$', desktop_views.threads),
+  url(r'^desktop/debug/threads$', desktop_views.threads, name="desktop.views.threads"),
   url(r'^desktop/debug/memory$', desktop_views.memory),
   url(r'^desktop/debug/check_config$', desktop_views.check_config),
   url(r'^desktop/debug/check_config_ajax$', desktop_views.check_config_ajax),
