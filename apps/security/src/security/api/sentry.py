@@ -353,7 +353,7 @@ def list_sentry_privileges_by_authorizable(request):
   result = {'status': -1, 'message': 'Error'}
 
   try:
-    groups = [request.POST.get('groupName']] if request.POST['groupName') else None
+    groups = [request.POST.get('groupName')] if request.POST['groupName') else None
     serviceName = request.POST.get('server')
     authorizableSet = [json.loads(request.POST.get('authorizableHierarchy'))]
     component = request.POST.get('component')
