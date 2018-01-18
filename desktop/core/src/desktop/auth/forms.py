@@ -138,7 +138,6 @@ class LdapAuthenticationForm(AuthenticationForm):
           self.error_messages['invalid_login'])
       elif not self.user_cache.is_active:
         raise ValidationError(self.error_messages['inactive'])
-    self.check_for_test_cookie()
     return self.cleaned_data
 
 
